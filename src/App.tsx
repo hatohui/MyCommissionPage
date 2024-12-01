@@ -4,7 +4,7 @@ import ErrorPage from "./Pages/Error";
 import { useEffect, useState } from "react";
 import NavigationBar from "./Components/NavigationBar";
 import GalleryPage from "./Pages/GalleryPage/index";
-import CommissionPage from "./Pages/CommissionPage/index";
+import CommissionPage from "./Pages/CommissionPage";
 import QnAPage from "./Pages/QnAPage/index";
 import Footer from "./Components/Footer";
 

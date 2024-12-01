@@ -1,7 +1,8 @@
 import React from "react";
+import UnderConstruction from "../../Components/UnderConstruction";
 
 const index: React.FC = () => {
-  return <div>gALLERY</div>;
+  return <UnderConstruction></UnderConstruction>;
 };
 
 export default index;

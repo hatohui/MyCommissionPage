@@ -19,6 +19,7 @@ const NavigationBar: React.FC<NavBarSetting> = ({ settings }) => {
       className="d-flex align-content-center 
       justify-content-center z-3 vw-100 m-0"
       style={{ backdropFilter: "blur(5px)" }}
+      data-bs-theme={location.pathname === "/" ? "dark" : null}
     >
       <Nav fill variant="underline" activeKey={location.pathname}>
         <NavItem>
