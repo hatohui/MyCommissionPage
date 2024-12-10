@@ -1,3 +1,15 @@
 body {
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  background: local;
+  width: 0.1px;
+  height: 0.1px;
+}
+
+::-webkit-scrollbar-corner {
+  background: local;
+  width: 0.1;
 }

@@ -11,6 +11,10 @@ export enum CommissionStatus {
   CLOSED = 0,
 }
 
+export type handleChangeFunction = (
+  args: React.ChangeEvent<HTMLInputElement>
+) => void;
+
 export interface CommissionDetails {
   name: string;
   email: string;

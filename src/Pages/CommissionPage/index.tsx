@@ -14,6 +14,8 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 import { CommissionDetails, CommissionType } from "../../types";
+import CommissionTypeSelect from "../../Components/forCommissionPage/CommissionTypeSelect";
+import { PRICES } from "../../Price";
 
 const index: React.FC = () => {
   const [preference, setPreference] = useState<string>("");
@@ -63,10 +65,11 @@ const index: React.FC = () => {
 
   //handle the additional char toggle
   const handleAdditionalCharToggle = () => {
-    setCommDetail({
-      ...commDetail,
-      numOfChar: 1,
-    });
+    if (commDetail.numOfChar !== 1)
+      setCommDetail({
+        ...commDetail,
+        numOfChar: 1,
+      });
     setExtraChar(!extraChar);
   };
 
@@ -79,20 +82,14 @@ const index: React.FC = () => {
   //calculate the prices
   let price = 0;
   switch (commDetail.type) {
-    case -1:
-      price = 0;
+    case CommissionType.ICON:
+      price = PRICES.ICON;
       break;
-    case 0:
-      price = 50;
+    case CommissionType.FULL:
+      price = PRICES.FULL;
       break;
-    case 1:
-      price = 100;
-      break;
-    case 2:
+    case CommissionType.SKETCHPAGE:
       price = 200;
-      break;
-    case 3:
-      price = -1;
       break;
   }
 
@@ -105,6 +102,16 @@ const index: React.FC = () => {
   } else {
     toShow = `Price: $${price} USD`;
   }
+
+  //add in the character fees
+  price += PRICES.ADDITIONAL_CHARACTER * (commDetail.numOfChar - 1);
+
+  //if character num > 3 + 30usd complexity fees
+  if (commDetail.numOfChar > 3) price += PRICES.COMPLEX_FEE;
+
+  //if background exist:
+  if (commDetail.background && commDetail.type !== CommissionType.NONE)
+    price += PRICES.BACKGROUND;
 
   //show the sum price:
 
@@ -119,7 +126,7 @@ const index: React.FC = () => {
             <div>
               Status: <span className="text-success">OPEN</span>
             </div>
-            {price != 0 && price != -1 ? <Row>Price</Row> : null}
+            {price != 0 && price != -1 ? <Row>Price: ${price} USD</Row> : null}
           </div>
         </Col>
         <Col lg={true}>
@@ -155,30 +162,10 @@ const index: React.FC = () => {
                 </FormGroup>
               </Row>
               <Row>
-                <FormGroup className="mb-3">
-                  <FormLabel>Commission Type</FormLabel>
-                  <FormSelect
-                    required
-                    defaultValue={CommissionType.NONE}
-                    name="type"
-                    onChange={handleChange as any}
-                  >
-                    <option
-                      disabled
-                      value={CommissionType.NONE}
-                      className="text-secondary"
-                    >
-                      select a commission type
-                    </option>
-                    <option value={CommissionType.ICON}>Icon</option>
-                    <option value={CommissionType.FULL}>Full</option>
-                    <option value={CommissionType.SKETCHPAGE}>
-                      Sketch Page
-                    </option>
-                    <option value={CommissionType.OTHER}>Other</option>
-                  </FormSelect>
-                  <FormText muted>{toShow}</FormText>
-                </FormGroup>
+                <CommissionTypeSelect
+                  handleChange={handleChange}
+                  undertext={toShow}
+                />
                 <FormGroup as={Col} lg={true}>
                   <FormCheck
                     type="checkbox"
@@ -192,8 +179,12 @@ const index: React.FC = () => {
                     type="checkbox"
                     id="add_background"
                     label="Background"
+                    name="background"
+                    onChange={handleChange}
                   ></FormCheck>
-                  {commDetail.background ? <FormText>+$30 USD</FormText> : null}
+                  {commDetail.background ? (
+                    <FormText>+${PRICES.BACKGROUND} USD</FormText>
+                  ) : null}
                 </FormGroup>
                 <FormGroup>
                   <FloatingLabel label="Amount of characters" className="mb-3">
@@ -222,6 +213,7 @@ const index: React.FC = () => {
                   </FormLabel>
                   <FormSelect
                     required
+                    defaultValue=""
                     onChange={(e) => setPreference(e.target.value)}
                   >
                     <option disabled value="" className="text-secondary">
@@ -239,7 +231,16 @@ const index: React.FC = () => {
                 name="inPerson"
                 onChange={handleChange}
               ></FormCheck>
-              <Button type="submit">Submit</Button>
+              <Row>
+                <Col>
+                  <Button type="submit">Submit</Button>
+                </Col>
+                <Col>
+                  {price > 0 ? (
+                    <div className="text-warning">Total Price: {price}</div>
+                  ) : null}
+                </Col>
+              </Row>
             </Form>
           </Container>
         </Col>
